@@ -128,9 +128,9 @@ step "Detectando rutas de Claude Code..."
 USERNAME=$(whoami)
 PROJECT_ID="-Users-${USERNAME}"
 MEMORY_DIR="$HOME/.claude/projects/${PROJECT_ID}/memory"
-OBSIDIAN_MEMORIA="${VAULT_PATH}/00 Agentes/F.A.T.E/Memoria"
-CONVERSACIONES_DIR="${VAULT_PATH}/01 Growth Engine/Infraestructura IA/Claude Code/Conversaciones"
-CREDENCIALES_FILE="${VAULT_PATH}/05 Credenciales/Servicios.md"
+OBSIDIAN_MEMORIA="${VAULT_PATH}/00 Operating System/Activos/Memoria"
+CONVERSACIONES_DIR="${VAULT_PATH}/00 Operating System/Claude Code/Conversaciones"
+CREDENCIALES_FILE="${VAULT_PATH}/03 Credenciales/Servicios.md"
 
 ok "Project ID detectado: $PROJECT_ID"
 ok "Memoria Claude: $MEMORY_DIR"
@@ -154,7 +154,8 @@ step "Instalando hooks..."
 
 mkdir -p "$CLAUDE_DIR/hooks"
 cp "$TEMP_DIR/repo/hooks/"*.py "$CLAUDE_DIR/hooks/"
-chmod +x "$CLAUDE_DIR/hooks/"*.py
+cp "$TEMP_DIR/repo/hooks/"*.sh "$CLAUDE_DIR/hooks/" 2>/dev/null || true
+chmod +x "$CLAUDE_DIR/hooks/"*.py "$CLAUDE_DIR/hooks/"*.sh 2>/dev/null || true
 ok "Hooks copiados a $CLAUDE_DIR/hooks/"
 
 # Función para reemplazar valores en archivos Python
@@ -178,15 +179,14 @@ ok "obsidian_start_hook.py configurado"
 # Adaptar obsidian_memory_sync.py
 F="$CLAUDE_DIR/hooks/obsidian_memory_sync.py"
 replace_in_file "$F" "/Users/{tu-usuario}/.claude/projects/{project-id}/memory" "$MEMORY_DIR"
-replace_in_file "$F" "/ruta/a/tu/vault/00 Agentes/{Tu-Agente}/Memoria" "$OBSIDIAN_MEMORIA"
+replace_in_file "$F" "/ruta/a/tu/vault/00 Operating System/Activos/Memoria" "$OBSIDIAN_MEMORIA"
 ok "obsidian_memory_sync.py configurado"
 
-# Adaptar obsidian_session_end_hook.py
-F="$CLAUDE_DIR/hooks/obsidian_session_end_hook.py"
+# Adaptar obsidian_hook.py
+F="$CLAUDE_DIR/hooks/obsidian_hook.py"
 replace_in_file "$F" "/ruta/a/tu/vault" "$VAULT_PATH"
 replace_in_file "$F" "/Users/{tu-usuario}/.claude/projects/{project-id}/memory" "$MEMORY_DIR"
-replace_in_file "$F" "f\"{VAULT}/00 Agentes/{Tu-Agente}/Memoria\"" "\"${OBSIDIAN_MEMORIA}\""
-ok "obsidian_session_end_hook.py configurado"
+ok "obsidian_hook.py configurado"
 
 # Adaptar conversation_capture.py
 F="$CLAUDE_DIR/hooks/conversation_capture.py"
@@ -257,7 +257,7 @@ HOOKS_JSON=$(cat << ENDJSON
       "hooks": [
         {
           "type": "command",
-          "command": "/usr/bin/python3 $CLAUDE_DIR/hooks/obsidian_session_end_hook.py",
+          "command": "/usr/bin/python3 $CLAUDE_DIR/hooks/obsidian_hook.py",
           "timeout": 30,
           "statusMessage": "Guardando en vault..."
         }
@@ -375,7 +375,7 @@ check_file() {
 check_file "$CLAUDE_DIR/hooks/obsidian_start_hook.py"    "Hook SessionStart"
 check_file "$CLAUDE_DIR/hooks/obsidian_memory_sync.py"   "Hook PostToolUse"
 check_file "$CLAUDE_DIR/hooks/conversation_capture.py"   "Hook Stop"
-check_file "$CLAUDE_DIR/hooks/obsidian_session_end_hook.py" "Hook SessionEnd"
+check_file "$CLAUDE_DIR/hooks/obsidian_hook.py"             "Hook SessionEnd"
 check_file "$CLAUDE_DIR/skills/fate-vault-guardian/SKILL.md" "Skill fate-vault-guardian"
 check_file "$CLAUDE_DIR/settings.json"                   "settings.json"
 check_file "$CLAUDE_MD"                                   "CLAUDE.md"
