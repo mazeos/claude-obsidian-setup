@@ -2,22 +2,16 @@
 """Claude Code PostToolUse Hook — Sync inmediato de memoria a Obsidian
 
 Se ejecuta cada vez que Claude escribe o edita un archivo de memoria.
-Si el archivo pertenece al directorio de memoria de Claude Code,
-lo copia automaticamente al vault de Obsidian.
-
-CONFIGURAR: editar las variables de la seccion CONFIG antes de usar.
+Si el archivo pertenece al directorio de memoria, lo copia a
+00 Operating System/Activos/Memoria/ en el Fate Vault.
 """
 
 import sys
 import json
 from pathlib import Path
 
-# ============================================================
-# CONFIG — adaptar a tu entorno
-# ============================================================
-MEMORY_DIR   = "/Users/{tu-usuario}/.claude/projects/{project-id}/memory"
-OBSIDIAN_DIR = "/ruta/a/tu/vault/00 Agentes/{Tu-Agente}/Memoria"
-# ============================================================
+MEMORY_DIR   = "/Users/alevogeler/.claude/projects/-Users-alevogeler/memory"
+OBSIDIAN_DIR = "/Users/alevogeler/Documents/Fate Vault/00 Operating System/Activos/Memoria"
 
 
 def main():
@@ -37,6 +31,7 @@ def main():
 
     src = Path(file_path)
 
+    # Solo actuar si es un archivo .md dentro del directorio de memoria
     if not src.suffix == ".md":
         return
 

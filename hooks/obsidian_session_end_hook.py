@@ -1,12 +1,10 @@
 #!/usr/bin/env python3
-"""Claude Code SessionEnd Hook — Sincronizacion final con vault de Obsidian
+"""Claude Code SessionEnd Hook — Sincronizacion con Fate Vault
 
-Corre al cerrar cada sesion de Claude Code.
+Corre al final de cada sesion de Claude Code.
 Responsabilidades:
-1. Sincronizar archivos de memoria → vault/00 Agentes/{Agente}/Memoria/
-2. Sincronizar MCPs activos → vault/05 Credenciales/Servicios.md
-
-CONFIGURAR: editar las variables de la seccion CONFIG antes de usar.
+1. Sincronizar archivos de memoria → 00 Operating System/Activos/Memoria/
+2. Sincronizar MCPs activos → 03 Credenciales/Servicios.md
 """
 
 import sys
@@ -15,14 +13,10 @@ import os
 from datetime import datetime
 from pathlib import Path
 
-# ============================================================
-# CONFIG — adaptar a tu entorno
-# ============================================================
-VAULT              = "/ruta/a/tu/vault"
-MEMORIA_OBSIDIAN   = f"{VAULT}/00 Agentes/{{Tu-Agente}}/Memoria"
-CREDENCIALES_FILE  = f"{VAULT}/05 Credenciales/Servicios.md"
-MEMORY_SOURCE_DIR  = "/Users/{tu-usuario}/.claude/projects/{project-id}/memory"
-# ============================================================
+VAULT              = "/Users/alevogeler/Documents/Fate Vault"
+MEMORIA_OBSIDIAN   = f"{VAULT}/00 Operating System/Activos/Memoria"
+CREDENCIALES_FILE  = f"{VAULT}/03 Credenciales/Servicios.md"
+MEMORY_SOURCE_DIR  = "/Users/alevogeler/.claude/projects/-Users-alevogeler/memory"
 
 
 def leer_stdin():
@@ -39,12 +33,17 @@ def fecha_corta():
     return datetime.now().strftime("%Y-%m-%d %H:%M")
 
 
+def asegurar_directorio(path):
+    Path(path).mkdir(parents=True, exist_ok=True)
+
+
+# 1. Sincronizar archivos de memoria a Obsidian
 def sincronizar_memoria():
     source = Path(MEMORY_SOURCE_DIR)
     if not source.exists():
         return 0
 
-    Path(MEMORIA_OBSIDIAN).mkdir(parents=True, exist_ok=True)
+    asegurar_directorio(MEMORIA_OBSIDIAN)
 
     copiados = 0
     for archivo in source.glob("*.md"):
@@ -61,6 +60,7 @@ def sincronizar_memoria():
     return copiados
 
 
+# 2. Sincronizar MCPs activos → Servicios.md
 def sincronizar_mcps():
     import subprocess
     import re
@@ -77,10 +77,14 @@ def sincronizar_mcps():
     if not output.strip():
         return False
 
+    EXCLUIDOS = {"claude.ai Atlassian", "claude.ai Miro"}
+
     filas = []
     for linea in output.splitlines():
         linea = linea.strip()
         if not linea or linea.startswith("Checking"):
+            continue
+        if any(ex in linea for ex in EXCLUIDOS):
             continue
 
         estado = "✓" if "Connected" in linea else ("⚠️" if "Needs auth" in linea else "✗")
@@ -109,14 +113,14 @@ def sincronizar_mcps():
         return False
 
     contenido = cred_path.read_text(encoding="utf-8")
-    MARCA = "## MCPs Configurados (auto-sync)"
 
-    if MARCA in contenido:
-        inicio = contenido.index(MARCA)
-        resto = contenido[inicio + len(MARCA):]
-        siguiente = resto.find("\n## ")
-        if siguiente != -1:
-            fin = inicio + len(MARCA) + siguiente
+    MARCA_INICIO = "## MCPs Configurados (auto-sync)"
+    if MARCA_INICIO in contenido:
+        inicio = contenido.index(MARCA_INICIO)
+        resto = contenido[inicio + len(MARCA_INICIO):]
+        siguiente_seccion = resto.find("\n## ")
+        if siguiente_seccion != -1:
+            fin = inicio + len(MARCA_INICIO) + siguiente_seccion
             contenido = contenido[:inicio] + nueva_seccion + contenido[fin + 1:]
         else:
             contenido = contenido[:inicio] + nueva_seccion
@@ -147,7 +151,7 @@ def main():
     resumen = " | ".join(resultados) if resultados else "Sin cambios"
 
     print(json.dumps({
-        "systemMessage": f"Vault sincronizado — {resumen}"
+        "systemMessage": f"Obsidian sincronizado — {resumen}"
     }))
 
 

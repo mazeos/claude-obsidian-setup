@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
-"""Claude Code SessionStart Hook — Carga contexto desde vault de Obsidian
+"""Claude Code SessionStart Hook — Carga contexto desde Fate Vault
 
 Corre al inicio de cada sesion de Claude Code.
-Inyecta como contexto el contenido clave del vault para que
+Inyecta como contexto el contenido clave del vault de Obsidian para que
 Claude tenga el estado completo del negocio desde el primer mensaje.
 
-CONFIGURAR: editar las variables de la seccion CONFIG antes de usar.
+Estructura del vault:
+  _Sistema/, 00 Operating System/, 01 Growth Engine/, 02 Fulfillment Engine/,
+  03 Credenciales/
 """
 
 import sys
@@ -13,23 +15,19 @@ import json
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
 
-# ============================================================
-# CONFIG — adaptar a tu entorno
-# ============================================================
-VAULT = "/ruta/a/tu/vault"                        # ← tu ruta
-CONVERSACIONES_DIR = f"{VAULT}/01 Growth Engine/Infraestructura IA/Claude Code/Conversaciones"
+VAULT = "/Users/alevogeler/Documents/Fate Vault"
+CONVERSACIONES_DIR = f"{VAULT}/00 Operating System/Claude Code/Conversaciones"
 
 # Archivos a leer y exponer como contexto (en orden de prioridad)
-# El marcador "__DIR__" lee todo el directorio recursivamente
 ARCHIVOS_CONTEXTO = [
     (f"{VAULT}/_Sistema/REGLAS.md",                          "Reglas del Vault"),
     (f"{VAULT}/_Sistema/MAPA.md",                            "Mapa del Vault"),
-    (f"{VAULT}/00 Agentes/Sistema de Agentes.md",            "Sistema de Agentes"),
+    (f"{VAULT}/00 Operating System/Activos/GSD - Get Shit Done.md",            "Sistema de Agentes"),
     (f"{VAULT}/01 Growth Engine/Growth Engine.md",            "Growth Engine Dashboard"),
-    (f"{VAULT}/05 Credenciales/Servicios.md",                "Servicios y Credenciales"),
-    (f"{VAULT}/02 Clientes/Consultoria",                     "__DIR__"),
+    (f"{VAULT}/01 Growth Engine/Marketing/Marketing.md",      "Marketing Dashboard"),
+    (f"{VAULT}/03 Credenciales/Servicios.md",                "Servicios y Credenciales"),
+    (f"{VAULT}/02 Fulfillment Engine/Clientes",               "__DIR__"),
 ]
-# ============================================================
 
 
 def leer_archivo(path: str):
@@ -40,7 +38,7 @@ def leer_archivo(path: str):
 
 
 def leer_directorio(path: str) -> str:
-    """Lee todos los .md de un directorio recursivamente y los concatena."""
+    """Lee todos los .md de un directorio (1 nivel) y los concatena."""
     partes = []
     carpeta = Path(path)
     if not carpeta.exists():
@@ -67,13 +65,18 @@ def cargar_conversaciones_recientes() -> str:
             for md in sorted(carpeta.glob("*.md"), reverse=True):
                 archivos.append(md)
 
+    if not archivos:
+        return ""
+
+    # Tomar las 3 mas recientes
     archivos = archivos[:3]
 
     partes = []
-    for md in reversed(archivos):
+    for md in reversed(archivos):  # cronologico
         contenido = leer_archivo(str(md))
         if not contenido:
             continue
+        # Truncar a 300 lineas
         lineas = contenido.splitlines()[:300]
         partes.append(f"### {md.stem}\n" + "\n".join(lineas))
 
@@ -97,6 +100,7 @@ def main():
             if contenido:
                 secciones.append(f"## {etiqueta}\n\n{contenido}")
 
+    # Agregar conversaciones recientes
     conv_recientes = cargar_conversaciones_recientes()
     if conv_recientes:
         secciones.append(conv_recientes)
@@ -106,7 +110,7 @@ def main():
         return
 
     contexto = (
-        "# Contexto cargado desde Fate Vault\n\n"
+        "# Contexto cargado desde Fate Vault (Maze Funnels)\n\n"
         + "\n\n---\n\n".join(secciones)
     )
 

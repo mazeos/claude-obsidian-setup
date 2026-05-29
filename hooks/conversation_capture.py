@@ -3,7 +3,7 @@
 
 Se ejecuta despues de cada respuesta de Claude (evento Stop).
 Escribe/sobreescribe el .md de la sesion actual en:
-  Fate Vault / 01 Growth Engine / Infraestructura IA / Claude Code / Conversaciones / {fecha} /
+  Fate Vault / 00 Operating System / Claude Code / Conversaciones / {fecha} /
 """
 
 import sys
@@ -15,7 +15,7 @@ from pathlib import Path
 from datetime import datetime, timezone
 
 VAULT = "/Users/alevogeler/Documents/Fate Vault"
-CONVERSACIONES_DIR = f"{VAULT}/01 Growth Engine/Infraestructura IA/Claude Code/Conversaciones"
+CONVERSACIONES_DIR = f"{VAULT}/00 Operating System/Claude Code/Conversaciones"
 CLAUDE_PROJECTS = os.path.expanduser("~/.claude/projects")
 
 
@@ -209,7 +209,7 @@ herramientas_usadas: [{", ".join(herramientas)}]
         secciones.append(bloque)
 
     cuerpo = "\n\n---\n\n".join(secciones) if secciones else "_Sin turns registrados_"
-    link = "\n\n---\n\n[[01 Growth Engine/Infraestructura IA/Infraestructura IA]]"
+    link = "\n\n---\n\n[[00 Operating System/Activos/Infraestructura IA]]"
     return frontmatter + "\n\n" + cuerpo + link
 
 
