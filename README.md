@@ -6,12 +6,12 @@ Integración completa entre Claude Code y un vault de Obsidian. Contexto persist
 
 ### Mac
 ```bash
-curl -sSL https://raw.githubusercontent.com/mazeos/obsidian-setup/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/mazeos/internal-obsidian-setup/main/install.sh | bash
 ```
 
 ### Windows (PowerShell como Administrador)
 ```powershell
-irm https://raw.githubusercontent.com/mazeos/obsidian-setup/main/install.ps1 | iex
+irm https://raw.githubusercontent.com/mazeos/internal-obsidian-setup/main/install.ps1 | iex
 ```
 
 El script hace todo automáticamente. Solo te pregunta 4 cosas:

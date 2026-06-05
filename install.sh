@@ -1,7 +1,7 @@
 #!/bin/bash
 # ============================================================
 # install.sh — Setup automático Claude Code + Obsidian
-# https://github.com/mazeos/obsidian-setup
+# https://github.com/mazeos/internal-obsidian-setup
 #
 # Uso:
 #   curl -sSL https://raw.githubusercontent.com/mazeos/obsidian-setup/main/install.sh | bash
@@ -9,7 +9,7 @@
 
 set -e
 
-REPO="https://github.com/mazeos/obsidian-setup.git"
+REPO="https://github.com/mazeos/internal-obsidian-setup.git"
 CLAUDE_DIR="$HOME/.claude"
 TEMP_DIR=$(mktemp -d)
 
