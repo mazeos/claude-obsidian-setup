@@ -14,7 +14,7 @@ import time
 from pathlib import Path
 from datetime import datetime, timezone
 
-VAULT = "/Users/alevogeler/Documents/Fate Vault"
+VAULT = "/ruta/a/tu/vault"
 CONVERSACIONES_DIR = f"{VAULT}/00 Operating System/Claude Code/Conversaciones"
 CLAUDE_PROJECTS = os.path.expanduser("~/.claude/projects")
 
@@ -198,7 +198,7 @@ herramientas_usadas: [{", ".join(herramientas)}]
         dt = ts_a_datetime(turn["timestamp"])
         hora_turn = dt.strftime("%H:%M:%S")
 
-        bloque = f"## Turn {num} — {hora_turn}\n\n**Alejandro:** {turn['user']}"
+        bloque = f"## Turn {num} — {hora_turn}\n\n**Usuario:** {turn['user']}"
 
         if turn["claude"]:
             bloque += f"\n\n**Claude:** {turn['claude']}"

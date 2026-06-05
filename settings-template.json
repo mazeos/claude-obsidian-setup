@@ -41,7 +41,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "/usr/bin/python3 /Users/{tu-usuario}/.claude/hooks/obsidian_session_end_hook.py",
+            "command": "/usr/bin/python3 /Users/{tu-usuario}/.claude/hooks/obsidian_hook.py",
             "timeout": 30,
             "statusMessage": "Guardando en vault..."
           }

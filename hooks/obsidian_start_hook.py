@@ -15,7 +15,7 @@ import json
 from pathlib import Path
 from datetime import datetime, timedelta, timezone
 
-VAULT = "/Users/alevogeler/Documents/Fate Vault"
+VAULT = "/ruta/a/tu/vault"
 CONVERSACIONES_DIR = f"{VAULT}/00 Operating System/Claude Code/Conversaciones"
 
 # Archivos a leer y exponer como contexto (en orden de prioridad)

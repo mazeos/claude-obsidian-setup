@@ -14,8 +14,8 @@ Reglas obligatorias del Fate Vault de Maze Funnels. Leer y aplicar antes de cual
 **APLICA cuando:**
 - Se crea, edita, mueve o elimina un archivo .md en el Fate Vault
 - Se crea una carpeta nueva dentro del vault
-- Se interactúa con el MCP de Obsidian (vault: `fate-vault`)
-- Se trabaja con archivos en `/Users/alevogeler/Documents/Fate Vault/`
+- Se interactúa con el MCP de Obsidian (vault: `nombre-de-tu-vault`)
+- Se trabaja con archivos en `/tu/ruta/al/vault/`
 
 **NUNCA aplica cuando:**
 - Se trabaja en VPS, servidor remoto, o cualquier conexión SSH

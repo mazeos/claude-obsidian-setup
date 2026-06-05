@@ -10,8 +10,8 @@ import sys
 import json
 from pathlib import Path
 
-MEMORY_DIR   = "/Users/alevogeler/.claude/projects/-Users-alevogeler/memory"
-OBSIDIAN_DIR = "/Users/alevogeler/Documents/Fate Vault/00 Operating System/Activos/Memoria"
+MEMORY_DIR   = "/Users/{tu-usuario}/.claude/projects/{project-id}/memory"
+OBSIDIAN_DIR = "/ruta/a/tu/vault/00 Operating System/Activos/Memoria"
 
 
 def main():

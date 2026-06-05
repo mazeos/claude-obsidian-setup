@@ -13,10 +13,10 @@ import os
 from datetime import datetime
 from pathlib import Path
 
-VAULT              = "/Users/alevogeler/Documents/Fate Vault"
+VAULT              = "/ruta/a/tu/vault"
 MEMORIA_OBSIDIAN   = f"{VAULT}/00 Operating System/Activos/Memoria"
 CREDENCIALES_FILE  = f"{VAULT}/03 Credenciales/Servicios.md"
-MEMORY_SOURCE_DIR  = "/Users/alevogeler/.claude/projects/-Users-alevogeler/memory"
+MEMORY_SOURCE_DIR  = "/Users/{tu-usuario}/.claude/projects/{project-id}/memory"
 
 
 def leer_stdin():
